@@ -33,6 +33,12 @@ public class ShipServiceImpl implements ShipService {
         return list;
     }
 
+    @Override
+    public List<Ship> getShipsByCriteria(String name, String planet, ShipType shipType, Long after, Long before, Boolean isUsed, Double minSpeed, Double maxSpeed, Integer minCrewSize, Integer maxCrewSize, Double minRating, Double maxRating) {
+        return shipRepository.getFilteredShipsFromDb(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed, minCrewSize, maxCrewSize, minRating, maxRating);
+    }
+
+
 //    @Override
 //    public List<Ship> getPage(List<Ship> ships, Integer pageNumber, Integer pageSize) {
 //        return null;

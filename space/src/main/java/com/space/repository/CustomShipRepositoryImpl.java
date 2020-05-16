@@ -12,10 +12,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CustomShipRepositoryImpl implements CustomShipRepository {
 
@@ -50,8 +49,8 @@ public class CustomShipRepositoryImpl implements CustomShipRepository {
         if (name != null) predicates.add(builder.like(productRoot.get("name"), "%" + name + "%"));
         if (planet != null) predicates.add(builder.like(productRoot.get("planet"), "%" + planet + "%"));
         if (shipType != null) predicates.add(builder.equal(productRoot.get("shipType"), shipType));
-        if (after != null) predicates.add(builder.greaterThanOrEqualTo(productRoot.get("after"), after));
-        if (before != null) predicates.add(builder.lessThanOrEqualTo(productRoot.get("before"), before));
+        if (after != null) predicates.add(builder.greaterThanOrEqualTo(productRoot.get("prodDate"), new Date(after)));
+        if (before != null) predicates.add(builder.lessThanOrEqualTo(productRoot.get("prodDate"), new Date(before)));
         if (isUsed != null) predicates.add(builder.equal(productRoot.get("isUsed"), isUsed));
         if (minSpeed != null) predicates.add(builder.greaterThanOrEqualTo(productRoot.get("speed"), minSpeed));
         if (maxSpeed != null) predicates.add(builder.lessThanOrEqualTo(productRoot.get("speed"), maxSpeed));
@@ -66,12 +65,7 @@ public class CustomShipRepositoryImpl implements CustomShipRepository {
         int safePageNumber = pageNumber != null ? pageNumber : 0;
 
         int totalPagesCount = (int) Math.ceil(resultCount / (double) safepageSize);
-        System.out.println("totalPagesCount to int: " + totalPagesCount);
-        System.out.println("totalPagesCount double: " + (resultCount / (double) safepageSize));
-        System.out.println("======================");
         int lastPageSize = resultCount - safepageSize * totalPagesCount;
-        System.out.println("");
-
 
         TypedQuery<Ship> query = em.createQuery(criteria)
             .setFirstResult(safePageNumber * safepageSize);
@@ -99,8 +93,8 @@ public class CustomShipRepositoryImpl implements CustomShipRepository {
         if (name != null) predicates.add(builder.like(productRoot.get("name"), "%" + name + "%"));
         if (planet != null) predicates.add(builder.like(productRoot.get("planet"), "%" + planet + "%"));
         if (shipType != null) predicates.add(builder.equal(productRoot.get("shipType"), shipType));
-        if (after != null) predicates.add(builder.greaterThanOrEqualTo(productRoot.get("after"), after));
-        if (before != null) predicates.add(builder.lessThanOrEqualTo(productRoot.get("before"), before));
+        if (after != null) predicates.add(builder.greaterThanOrEqualTo(productRoot.get("prodDate"), new Date(after)));
+        if (before != null) predicates.add(builder.lessThanOrEqualTo(productRoot.get("prodDate"), new Date(before)));
         if (isUsed != null) predicates.add(builder.equal(productRoot.get("isUsed"), isUsed));
         if (minSpeed != null) predicates.add(builder.greaterThanOrEqualTo(productRoot.get("speed"), minSpeed));
         if (maxSpeed != null) predicates.add(builder.lessThanOrEqualTo(productRoot.get("speed"), maxSpeed));

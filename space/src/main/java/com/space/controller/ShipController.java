@@ -41,10 +41,10 @@ public class ShipController {
 //        final List<Ship> ships = shipService.getShips(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed,
 //                minCrewSize, maxCrewSize, minRating, maxRating);
         final List<Ship> ships = shipService.getShipsByCriteria(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed,
-                minCrewSize, maxCrewSize, minRating, maxRating);
+                minCrewSize, maxCrewSize, minRating, maxRating, pageNumber, pageSize);
 
 
-//        final List<Ship> sortedShips = shipService.sortShips(ships, order);
+        final List<Ship> sortedShips = shipService.sortShips(ships, order);
 
         return ships;
     }
@@ -80,8 +80,8 @@ public class ShipController {
             @RequestParam(value = "minRating", required = false) Double minRating,
             @RequestParam(value = "maxRating", required = false) Double maxRating
     ) {
-        final Integer shipsCount = shipService.getShips(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed,
-                minCrewSize, maxCrewSize, minRating, maxRating).size();
+        final Integer shipsCount = shipService.getShipsCount(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed,
+                minCrewSize, maxCrewSize, minRating, maxRating);
 
 //        final List<Ship> sortedShips = shipService.sortShips(ships, order);
 
@@ -123,7 +123,7 @@ public class ShipController {
             @RequestParam(value = "pageSize", required = false) Integer pageSize
     ) {
         final List<Ship> ships = shipService.getShipsByCriteria(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed,
-                minCrewSize, maxCrewSize, minRating, maxRating);
+                minCrewSize, maxCrewSize, minRating, maxRating, pageNumber, pageSize);
 
 //        final List<Ship> sortedShips = shipService.sortShips(ships, order);
 

@@ -1,8 +1,10 @@
 package com.space.service;
 
+import com.space.controller.ShipOrder;
 import com.space.model.Ship;
 import com.space.model.ShipType;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ShipService {
@@ -34,8 +36,14 @@ public interface ShipService {
             Integer minCrewSize,
             Integer maxCrewSize,
             Double minRating,
-            Double maxRating
+            Double maxRating,
+            Integer pageNumber,
+            Integer pageSize
     );
+
+    List<Ship> sortShips(List<Ship> ships, ShipOrder order);
+
+    Integer getShipsCount(String name, String planet, ShipType shipType, Long after, Long before, Boolean isUsed, Double minSpeed, Double maxSpeed, Integer minCrewSize, Integer maxCrewSize, Double minRating, Double maxRating);
 
 //    List<Ship> getPage(List<Ship> ships, Integer pageNumber, Integer pageSize);
 

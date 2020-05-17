@@ -74,9 +74,65 @@ public class ShipServiceImpl implements ShipService {
         return shipRepository.getCountOfFilteredShipsFromDb(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed, minCrewSize, maxCrewSize, minRating, maxRating);
     }
 
+    @Override
+    public double computeRating(Double speed, Boolean used, Date prodDate) {
+        final int now = 3019;
+        final int prodYear = getYearFromDate(prodDate);
+        final double k = used ? 0.5 : 1;
+        final double rating = 80 * speed * k / (now - prodYear + 1);
+        return round(rating);
+    }
 
-//    @Override
-//    public List<Ship> getPage(List<Ship> ships, Integer pageNumber, Integer pageSize) {
-//        return null;
-//    }
+    @Override
+    public boolean isShipValid(Ship ship) {
+        return ship != null && isStringValid(ship.getName()) && isStringValid(ship.getPlanet())
+                && isProdDateValid(ship.getProdDate())
+                && isSpeedValid(ship.getSpeed())
+                && isCrewSizeValid(ship.getCrewSize());
+    }
+
+    @Override
+    public Ship saveShip(Ship ship) {
+        return shipRepository.save(ship);
+    }
+
+
+    private boolean isStringValid(String value) {
+        final int maxStringLength = 50;
+        return value != null && !value.isEmpty() && value.length() <= maxStringLength;
+    }
+
+    private boolean isProdDateValid(Date prodDate) {
+        final Date startProd = getDateForYear(2800);
+        final Date endProd = getDateForYear(3019);
+        return prodDate != null && prodDate.after(startProd) && prodDate.before(endProd);
+    }
+
+    private Date getDateForYear(int year) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        return calendar.getTime();
+    }
+
+    private int getYearFromDate(Date date) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
+    }
+
+    private boolean isCrewSizeValid(Integer crewSize) {
+        final int minCrewSize = 1;
+        final int maxCrewSize = 9999;
+        return crewSize != null && crewSize.compareTo(minCrewSize) >= 0 && crewSize.compareTo(maxCrewSize) <= 0;
+    }
+
+    private boolean isSpeedValid(Double speed) {
+        final double minSpeed = 0.01;
+        final double maxSpeed = 0.99;
+        return speed != null && speed.compareTo(minSpeed) >= 0 && speed.compareTo(maxSpeed) <= 0;
+    }
+
+    private double round(double value) {
+        return Math.round(value * 100) / 100D;
+    }
 }

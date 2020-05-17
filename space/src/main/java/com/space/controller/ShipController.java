@@ -2,16 +2,20 @@ package com.space.controller;
 
 import com.space.model.Ship;
 import com.space.model.ShipType;
-import com.space.repository.ShipRepository;
 import com.space.service.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @RestController
 public class ShipController {
     private ShipService shipService;
+
+    private static final Logger logger = LoggerFactory.getLogger(ShipController.class);
 
     public ShipController() {}
 
@@ -38,8 +42,6 @@ public class ShipController {
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize
     ) {
-//        final List<Ship> ships = shipService.getShips(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed,
-//                minCrewSize, maxCrewSize, minRating, maxRating);
         final List<Ship> ships = shipService.getShipsByCriteria(name, planet, shipType, after, before, isUsed, minSpeed, maxSpeed,
                 minCrewSize, maxCrewSize, minRating, maxRating, pageNumber, pageSize);
 
@@ -51,22 +53,6 @@ public class ShipController {
 
     @RequestMapping(path = "/rest/ships/count", method = RequestMethod.GET)
     public Integer getShipsCount(
-
-            /*****
-             * name=String
-             * planet=String
-             * shipType=ShipType
-             * after=Long
-             * before=Long
-             * isUsed=Boolean
-             * minSpeed=Double
-             * maxSpeed=Double
-             * minCrewSize=Integer
-             * maxCrewSize=Integer
-             * minRating=Double
-             * maxRating=Double
-             */
-
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "planet", required = false) String planet,
             @RequestParam(value = "shipType", required = false) ShipType shipType,
@@ -90,22 +76,6 @@ public class ShipController {
 
     @RequestMapping(path = "/rest/getship", method = RequestMethod.GET)
     public List<Ship> getShipsByCriteria(
-
-            /*****
-             * name=String
-             * planet=String
-             * shipType=ShipType
-             * after=Long
-             * before=Long
-             * isUsed=Boolean
-             * minSpeed=Double
-             * maxSpeed=Double
-             * minCrewSize=Integer
-             * maxCrewSize=Integer
-             * minRating=Double
-             * maxRating=Double
-             */
-
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "planet", required = false) String planet,
             @RequestParam(value = "shipType", required = false) ShipType shipType,
@@ -128,6 +98,43 @@ public class ShipController {
 //        final List<Ship> sortedShips = shipService.sortShips(ships, order);
 
         return ships;
+    }
+
+//    @RequestMapping(path = "/rest/ships", method = RequestMethod.POST)
+//    @ResponseBody
+//    public ResponseEntity<Ship> createShip(@RequestBody Ship ship) {
+//
+////        logger.debug("isShipValid :" + !shipService.isShipValid(ship));
+//
+//        if (!shipService.isShipValid(ship)) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//
+//        if (ship.getUsed() == null) ship.setUsed(false);
+//        ship.setSpeed(ship.getSpeed());
+//        final double rating = shipService.computeRating(ship.getSpeed(), ship.getUsed(), ship.getProdDate());
+//        ship.setRating(rating);
+//
+//        final Ship savedShip = shipService.saveShip(ship);
+//
+//        return new ResponseEntity<>(savedShip, HttpStatus.OK);
+//    }
+
+    @RequestMapping(path = "/rest/ships", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Ship> createShip(@RequestBody Ship ship) {
+        if (!shipService.isShipValid(ship)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (ship.getUsed() == null) ship.setUsed(false);
+        ship.setSpeed(ship.getSpeed());
+        final double rating = shipService.computeRating(ship.getSpeed(), ship.getUsed(), ship.getProdDate());
+        ship.setRating(rating);
+
+        final Ship savedShip = shipService.saveShip(ship);
+
+        return new ResponseEntity<>(savedShip, HttpStatus.OK);
     }
 
 }

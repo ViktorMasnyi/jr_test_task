@@ -7,7 +7,7 @@ import java.util.Date;
 @Table(name = "ship")
 public class Ship { // creating Domain Object
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // used when auto increment is available on DB
     private Long id;
 
     private String name; // до 50 знаков включительно

@@ -9,21 +9,6 @@ import java.util.List;
 
 public interface ShipService {
 
-    List<Ship> getShips(
-            String name,
-            String planet,
-            ShipType shipType,
-            Long after,
-            Long before,
-            Boolean isUsed,
-            Double minSpeed,
-            Double maxSpeed,
-            Integer minCrewSize,
-            Integer maxCrewSize,
-            Double minRating,
-            Double maxRating
-    );
-
     List<Ship> getShipsByCriteria(
             String name,
             String planet,
@@ -51,6 +36,10 @@ public interface ShipService {
 
     Ship saveShip(Ship ship);
 
-//    List<Ship> getPage(List<Ship> ships, Integer pageNumber, Integer pageSize);
+    Ship getShip(Long id);
+
+    Ship updateShip(Ship oldShip, Ship ship);
+
+    void deleteShip(Ship ship);
 
 }

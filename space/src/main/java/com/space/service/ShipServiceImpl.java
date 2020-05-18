@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.DateFormat;
 import java.util.*;
 
 @Service    // marks class as Spring component
@@ -25,13 +24,6 @@ public class ShipServiceImpl implements ShipService {
 
     public ShipServiceImpl() {
 
-    }
-
-    @Override
-    public List<Ship> getShips(String name, String planet, ShipType shipType, Long after, Long before, Boolean isUsed, Double minSpeed, Double maxSpeed, Integer minCrewSize, Integer maxCrewSize, Double minRating, Double maxRating) {
-        final List<Ship> list = new ArrayList<>();
-        shipRepository.findAll().forEach((ship) -> list.add((Ship) ship));
-        return list;
     }
 
     @Override
@@ -94,6 +86,77 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public Ship saveShip(Ship ship) {
         return shipRepository.save(ship);
+    }
+
+    @Override
+    public Ship getShip(Long id) {
+        return shipRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Ship updateShip(Ship oldShip, Ship newShip) throws IllegalArgumentException {
+        boolean shouldChangeRating = false;
+
+        final String name = newShip.getName();
+        if (name != null) {
+            if (isStringValid(name)) {
+                oldShip.setName(name);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        final String planet = newShip.getPlanet();
+        if (planet != null) {
+            if (isStringValid(planet)) {
+                oldShip.setPlanet(planet);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (newShip.getShipType() != null) {
+            oldShip.setShipType(newShip.getShipType());
+        }
+        final Date prodDate = newShip.getProdDate();
+        if (prodDate != null) {
+            if (isProdDateValid(prodDate)) {
+                oldShip.setProdDate(prodDate);
+                shouldChangeRating = true;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (newShip.getUsed() != null) {
+            oldShip.setUsed(newShip.getUsed());
+            shouldChangeRating = true;
+        }
+        final Double speed = newShip.getSpeed();
+        if (speed != null) {
+            if (isSpeedValid(speed)) {
+                oldShip.setSpeed(speed);
+                shouldChangeRating = true;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        final Integer crewSize = newShip.getCrewSize();
+        if (crewSize != null) {
+            if (isCrewSizeValid(crewSize)) {
+                oldShip.setCrewSize(crewSize);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        if (shouldChangeRating) {
+            final double rating = computeRating(oldShip.getSpeed(), oldShip.getUsed(), oldShip.getProdDate());
+            oldShip.setRating(rating);
+        }
+        shipRepository.save(oldShip);
+        return oldShip;
+    }
+
+    @Override
+    public void deleteShip(Ship ship) {
+        shipRepository.delete(ship);
     }
 
 
